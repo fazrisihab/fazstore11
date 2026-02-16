@@ -1429,11 +1429,11 @@ loadLogo();
 renderProducts();
 renderTestimonials();
 </script>
-<!-- Firebase Realtime Sync (STORE / INDEX) -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
 import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
+/* FIREBASE CONFIG */
 const firebaseConfig = {
   apiKey: "AIzaSyArLQXbV-2rPQ3FlSMk7m7O9JSzz7mfL_M",
   authDomain: "fazstore-8bd2c.firebaseapp.com",
@@ -1444,14 +1444,33 @@ const firebaseConfig = {
   appId: "1:1019734902255:web:e9a234c77933164d70221a"
 };
 
+/* INIT */
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// listen realtime product updates
+/* DATA PRODUK */
+let products = [];
+
+/* RENDER PRODUK */
+function renderProducts() {
+  const container = document.getElementById("product-list");
+  container.innerHTML = "";
+
+  products.forEach(p => {
+    container.innerHTML += `
+      <div class="product">
+        <h3>${p.name}</h3>
+        <p>${p.price}</p>
+      </div>
+    `;
+  });
+}
+
+/* REALTIME SYNC */
 onValue(ref(db, "products"), snapshot => {
   if (!snapshot.exists()) return;
 
-  products = snapshot.val();
+  products = Object.values(snapshot.val());
   renderProducts();
 });
 </script>
