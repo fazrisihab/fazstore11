@@ -1448,30 +1448,21 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-/* DATA PRODUK */
-let products = [];
-
-/* RENDER PRODUK */
-function renderProducts() {
-  const container = document.getElementById("product-list");
-  container.innerHTML = "";
-
-  products.forEach(p => {
-    container.innerHTML += `
-      <div class="product">
-        <h3>${p.name}</h3>
-        <p>${p.price}</p>
-      </div>
-    `;
-  });
-}
+/* STORAGE FIREBASE */
+window.firebaseProducts = [];
 
 /* REALTIME SYNC */
 onValue(ref(db, "products"), snapshot => {
+
   if (!snapshot.exists()) return;
 
-  products = Object.values(snapshot.val());
-  renderProducts();
+  window.firebaseProducts = Object.values(snapshot.val());
+
+  // pakai renderer lama kamu
+  if (typeof renderProducts === "function") {
+    renderProducts();
+  }
+
 });
 </script>
 </body>
